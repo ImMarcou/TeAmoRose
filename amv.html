@@ -12,7 +12,31 @@
 
 <body>
     <a href="index.html" class="boton boton-superior">Volver al Inicio</a>
-    <video class="amv-video" src="videos/amv.mp4" autoplay loop></video>
+    <style>
+        .loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+        
+        .loader.active {
+            display: block;
+        }
+        </style>
+        
+        <div class="loader">Cargando video...</div>
+        <video 
+            class="amv-video" 
+            src="/videos/amv.mp4" 
+            autoplay 
+            loop
+            playsinline
+            preload="metadata"
+            onloadstart="document.querySelector('.loader').classList.add('active')"
+            oncanplay="document.querySelector('.loader').classList.remove('active')"
+        ></video>
 </body>
 
 </html>
