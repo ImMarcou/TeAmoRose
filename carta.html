@@ -37,6 +37,7 @@
                     Marco Antonio
                 </p>
             </div>
+            <button class="read-more-btn" id="readMoreBtn">Leer carta completa</button>
         </div>
     </div>
 
@@ -44,14 +45,19 @@
         const envelope = document.getElementById('envelope');
         const letter = document.getElementById('letter');
         const letterContent = document.querySelector('.letter-content');
+        const readMoreBtn = document.getElementById('readMoreBtn');
         let isAnimating = false;
         let animationPaused = false;
         let scrollInterval;
+        let hasReachedEnd = false;
 
         envelope.addEventListener('click', () => {
             envelope.classList.toggle('open');
+        });
+
+        readMoreBtn.addEventListener('click', () => {
             if (!isAnimating) {
-                setTimeout(startScrollAnimation, 1000);
+                startScrollAnimation();
             }
         });
 
@@ -75,15 +81,17 @@
 
         function startScrollAnimation() {
             isAnimating = true;
+            hasReachedEnd = false;
+            readMoreBtn.style.display = 'none';
             letter.classList.add('expanded');
             
-            const duration = 35000; // 35 segundos para una animación más lenta
+            const duration = 15000; // 15 segundos para la animación completa
             const startTime = Date.now();
             const startScroll = letterContent.scrollTop;
             const maxScroll = letterContent.scrollHeight - letterContent.clientHeight;
 
             scrollInterval = setInterval(() => {
-                if (!animationPaused) {
+                if (!animationPaused && !hasReachedEnd) {
                     const elapsed = Date.now() - startTime;
                     const progress = Math.min(elapsed / duration, 1);
                     
@@ -92,6 +100,15 @@
                     if (progress >= 1) {
                         clearInterval(scrollInterval);
                         isAnimating = false;
+                        hasReachedEnd = true;
+                        readMoreBtn.style.display = 'block';
+                        readMoreBtn.onclick = () => {
+                            letterContent.scrollTop = 0;
+                            letter.classList.remove('expanded');
+                            readMoreBtn.textContent = 'Leer carta completa';
+                            readMoreBtn.onclick = startScrollAnimation;
+                            hasReachedEnd = false;
+                        };
                     }
                 }
             }, 16);
