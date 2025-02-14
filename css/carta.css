@@ -1,59 +1,202 @@
-/* Contenedor centrado con perspectiva para efecto 3D */
 .envelope-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 40px); /* Ajusta según necesites, considerando el botón superior */
+    min-height: calc(100vh - 40px);
     perspective: 1000px;
-  }
-  
-  /* Estructura del sobre */
-  .envelope {
+    padding: 20px;
+    position: relative;
+}
+
+.envelope {
     position: relative;
     width: 300px;
     height: 200px;
-    background: #fff;
-    border: 2px solid #ff5d8f;
-    border-radius: 10px;
-    overflow: hidden;
+    transform-style: preserve-3d;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255, 93, 143, 0.4);
-    transition: transform 0.5s ease;
-  }
-  
-  /* Solapa del sobre */
-  .envelope .flap {
+    transition: all 0.3s ease;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.envelope:hover {
+    transform: scale(1.05);
+}
+
+.envelope-base {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #ff8fab;
+    border: 2px solid #ff5d8f;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(255, 93, 143, 0.4);
+}
+
+.envelope-flap {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 50%;
-    background: #ff8fab;
-    transform-origin: top;
-    transition: transform 0.8s ease;
-  }
-  
-  /* Carta (papel) oculta inicialmente */
-  .envelope .letter {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
     height: 100%;
-    background: #ffe4ec;
-    padding: 20px;
+    background-color: #ffc9de;
+    border: 2px solid #ff5d8f;
+    transform-origin: top;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    clip-path: polygon(0 50%, 50% 100%, 100% 50%, 100% 0, 0 0);
+    z-index: 3;
+}
+
+.heart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    background-color: #ff5d8f;
+    transform: translate(-50%, -50%) rotate(45deg);
+    z-index: 4;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: glow 3s ease-in-out infinite;
+}
+
+.heart::before,
+.heart::after {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #ff5d8f;
+    border-radius: 50%;
+}
+
+.heart::before {
+    top: -15px;
+    left: 0;
+}
+
+.heart::after {
+    top: 0;
+    left: -15px;
+}
+
+.letter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
     box-sizing: border-box;
-    transform: translateY(100%);
-    transition: transform 0.8s ease 0.8s; /* Retraso para que la solapa se abra primero */
+    transform: translate(-50%, 100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #6b0d5c;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.letter-content {
+    overflow-y: hidden;
+    max-height: 70vh;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-bottom: 20px;
+}
+
+.letter-content::-webkit-scrollbar {
+    display: none;
+}
+
+.letter.expanded .letter-content {
     overflow-y: auto;
-  }
-  
-  /* Al añadir la clase "open" se animan la solapa y la carta */
-  .envelope.open .flap {
-    transform: rotateX(-180deg);
-  }
-  
-  .envelope.open .letter {
+}
+
+.letter p {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 0;
+    text-align: justify;
+    margin-bottom: 15px;
+}
+
+.letter .firma {
+    text-align: right;
+    margin-top: 20px;
+    font-style: italic;
+}
+
+.letter .saludo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ff5d8f;
+}
+
+.envelope.open {
+    opacity: 0;
+    transform: translateY(-100px);
+    transition: all 1s ease;
+    pointer-events: none;
+}
+
+.envelope.open .envelope-flap {
+    transform: rotateX(180deg);
+}
+
+.envelope.open ~ .letter {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+}
+
+.envelope.open ~ .letter p {
+    opacity: 1;
     transform: translateY(0);
-  }
-  
+    transition-delay: 0.6s;
+}
+
+@media screen and (max-width: 574px) {
+    .envelope {
+        width: 260px;
+        height: 174px;
+    }
+    
+    .letter {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .letter-content {
+        max-height: 60vh;
+    }
+    
+    .letter p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    .heart {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .heart::before,
+    .heart::after {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .heart::before {
+        top: -12.5px;
+    }
+    
+    .heart::after {
+        left: -12.5px;
+    }
+}

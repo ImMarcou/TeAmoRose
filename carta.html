@@ -1,42 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Se utiliza el mismo style.css para la temática y se carga un css extra para la animación de la carta -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/carta.css">
-  <link rel="icon" href="img/test.png" type="image/x-icon">
-  <title>Carta</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/carta.css">
+    <link rel="icon" href="img/test.png" type="image/x-icon">
+    <title>Carta</title>
 </head>
 <body>
-  <a href="index.html" class="boton boton-superior">Volver al Inicio</a>
-  
-  <div class="envelope-container">
-    <div class="envelope" id="envelope">
-      <!-- Solapa del sobre -->
-      <div class="flap"></div>
-      <!-- Contenido de la carta -->
-      <div class="letter">
-        <p>
-          Querida Ruth, <br><br>
-          Este es un mensaje muy especial que escribo para ti. <br>
-          Cada palabra en este mensaje refleja lo que siento por ti y lo importante que eres en mi vida. <br>
-          Gracias por iluminar mis días y por ser mi mayor inspiración. <br><br>
-          Con todo mi amor, <br>
-          [Tu Nombre]
-        </p>
-      </div>
-    </div>
-  </div>
+    <a href="index.html" class="boton boton-superior">Volver al Inicio</a>
 
-  <script>
-    // Al hacer click sobre el sobre, se agrega la clase "open" para iniciar las animaciones.
-    const envelope = document.getElementById('envelope');
-    envelope.addEventListener('click', function() {
-      envelope.classList.add('open');
-    });
-  </script>
+    <div class="envelope-container">
+        <div class="envelope" id="envelope">
+            <div class="envelope-base"></div>
+            <div class="envelope-flap"></div>
+            <div class="heart"></div>
+        </div>
+        <div class="letter" id="letter">
+            <div class="letter-content">
+                <p class="saludo">
+                    Mi Virginia Ruth ❤️
+                </p>
+                <p>
+                    Ya es 14 de febrero y es San Valentín, nuestro primer San Valentín, la verdad eres la mujer de mi vida, la mujer de mis sueños con la que voy a pasar todo lo que me queda de vida porque eres realmente lo que siempre quise Rose, lo eres todo para mi y te aseguro que desde el momento que me pediste ser tu novio fui demasiado feliz y lo sigo siendo, porque me enamoraste mucho y es un sentimiento muy bonito el que siento por ti.
+                </p>
+                <p>
+                    Así que ahora amor, te digo con total seguridad que nuestra promesa de amor, mas bien nuestro pacto de amor se va a cumplir cada día y yo por cada día que pase me sentiré mas enamorado de ti, te amare como si fuera el último día de mi vida, puedes estar segura de que te cuidare mucho y de nuestro amor siempre será reciproco.
+                </p>
+                <p>
+                    Te amo, mi futura esposa, mi futura madre de mis hijos y la persona que me impulsa y motiva a lograr mis objetivos, igual sabes mi amor, yo solo te amo a ti, solo a ti, que eso siempre te quede muy claro, y recuerda siempre, eres una persona muy increíble, muy maravillosa, muy linda, muy hermosa, muy bonita, muy preciosa, muy tierna, todo ❤️, me re encantas Ruth, Te amo con todo mi corazón.
+                </p>
+                <p class="firma">
+                    Te ama tanto el amor de tu vida,<br>
+                    Marco Antonio
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const envelope = document.getElementById('envelope');
+        const letter = document.getElementById('letter');
+        const letterContent = document.querySelector('.letter-content');
+        let isAnimating = false;
+        let animationPaused = false;
+        let scrollInterval;
+
+        envelope.addEventListener('click', () => {
+            envelope.classList.toggle('open');
+            if (!isAnimating) {
+                setTimeout(startScrollAnimation, 1000);
+            }
+        });
+
+        letterContent.addEventListener('mousedown', () => {
+            if (isAnimating) {
+                animationPaused = true;
+            }
+        });
+
+        letterContent.addEventListener('mouseup', () => {
+            if (isAnimating) {
+                animationPaused = false;
+            }
+        });
+
+        letterContent.addEventListener('mouseleave', () => {
+            if (isAnimating) {
+                animationPaused = false;
+            }
+        });
+
+        function startScrollAnimation() {
+            isAnimating = true;
+            letter.classList.add('expanded');
+            
+            const duration = 35000; // 35 segundos para una animación más lenta
+            const startTime = Date.now();
+            const startScroll = letterContent.scrollTop;
+            const maxScroll = letterContent.scrollHeight - letterContent.clientHeight;
+
+            scrollInterval = setInterval(() => {
+                if (!animationPaused) {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    letterContent.scrollTop = startScroll + (maxScroll * progress);
+
+                    if (progress >= 1) {
+                        clearInterval(scrollInterval);
+                        isAnimating = false;
+                    }
+                }
+            }, 16);
+        }
+    </script>
 </body>
 </html>
